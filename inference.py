@@ -45,7 +45,7 @@ def main(input_saved_model_dir_path, input_classes_path, input_data_dir_path, ou
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='inference')
     parser.add_argument('--input_saved_model_dir_path', type=str,
-                        default='~/.vaik-count-pb-trainer/output_model/2023-11-25-17-49-54_layer118/step-1000_batch-16_epoch-20_loss_0.0193_val_loss_0.0175')
+                        default='~/.vaik-count-pb-trainer/output_model/2023-11-25-23-23-34/step-1000_batch-16_epoch-26_loss_0.0370_val_loss_0.0470')
     parser.add_argument('--input_classes_path', type=str,
                         default=os.path.join(os.path.dirname(__file__), 'test_dataset/classes.txt'))
     parser.add_argument('--input_data_dir_path', type=str,
