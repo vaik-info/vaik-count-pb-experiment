@@ -1,0 +1,2 @@
+tqdm>=4.64.1
+vaik-count-pb-inference @ git+https://github.com/vaik-info/vaik-count-pb-inference.git@b8a834b6a905401aba31347711fafd83a524113d
