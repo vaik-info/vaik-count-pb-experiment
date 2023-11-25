@@ -59,7 +59,7 @@ def main(input_json_dir_path, input_classes_path, output_dir_path):
         for label_index, label in enumerate(classes):
             count_str += f"{label}_{json_dict['count'][label_index]}({json_dict['answer'][label] if label in json_dict['answer'].keys() else 0})-"
         count_str = count_str[:-1]
-        output_image_path = os.path.join(output_dir_path, f'{os.path.splitext(os.path.basename(json_path))[0]}-pred(ans)-{count_str}.png')
+        output_image_path = os.path.join(output_dir_path, f'{os.path.splitext(os.path.basename(json_dict["image_path"]))[0]}-pred(ans)-{count_str}.png')
         canvas_image.save(output_image_path)
 
 
