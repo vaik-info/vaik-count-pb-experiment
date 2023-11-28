@@ -56,20 +56,15 @@ python inference.py --input_saved_model_dir_path '~/.vaik-count-pb-trainer/outpu
         ]
     },
     "count": [
-        1,
-        1,
-        0
+        1.432,
+        1.323,
+        0.8324
     ],
     "image_path": "/home/kentaro/GitHub/vaik-count-pb-experiment/test_dataset/data/valid_000000000_raw.png",
     "label": [
         "zero",
         "one",
         "two"
-    ],
-    "score": [
-        0.9421,
-        0.9566,
-        1.0
     ]
 }
 ```
