@@ -48,7 +48,7 @@ def calc_count_ACC(json_dict_list, classes):
     for json_dict in json_dict_list:
         for target_class_label in classes:
             answer_count = json_dict['answer'][target_class_label] if target_class_label in json_dict['answer'].keys() else 0
-            pred_count = json_dict['count'][classes.index(target_class_label)]
+            pred_count = round(json_dict['count'][classes.index(target_class_label)])
             if answer_count > 0:
                 count_error = abs(answer_count - pred_count) / answer_count
             elif pred_count > 0:
