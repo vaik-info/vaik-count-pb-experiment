@@ -36,20 +36,16 @@ def draw_canvas(canvas_image, pred_image, classes, colors):
     return canvas_image
 
 def draw_canvas_per_preds(canvas_image, pred_image, classes, colors):
-    canvas_image_list = []
-    org_canvas_image = canvas_image.copy()
     for target_class_index, target_class_label in enumerate(classes):
-        canvas_image = org_canvas_image.copy()
         target_pred_image = pred_image[:, :, target_class_index]
         target_pred_max_value = np.max(target_pred_image)
         target_pred_image = target_pred_image / target_pred_max_value if target_pred_max_value != 0. else target_pred_image
         target_pred_image = np.clip(target_pred_image*255, 0, 255).astype(np.uint8)
         draw_image = np.zeros((target_pred_image.shape[0], target_pred_image.shape[1], 4), dtype=np.uint8)
-        draw_image[:, :, :3] = [255, 255, 255]
+        draw_image[:, :, :3] = colors[target_class_index]
         draw_image[:, :, 3] = target_pred_image
         canvas_image = Image.alpha_composite(canvas_image, Image.fromarray(draw_image))
-        canvas_image_list.append(canvas_image)
-    return canvas_image_list
+    return canvas_image
 
 def main(input_json_dir_path, input_classes_path, output_dir_path):
     os.makedirs(output_dir_path, exist_ok=True)
@@ -74,9 +70,15 @@ def main(input_json_dir_path, input_classes_path, output_dir_path):
     for json_dict in json_dict_list:
         count_str = ""
         for label_index, label in enumerate(classes):
-            count_str += f"{label}_{json_dict['count'][label_index]}({json_dict['answer'][label] if label in json_dict['answer'].keys() else 0})-"
+            if json_dict['answer'] is not None:
+                count_str += f"{label}_{json_dict['count'][label_index]}({json_dict['answer'][label] if label in json_dict['answer'].keys() else 0})-"
+            else:
+                count_str += f"{label}_{json_dict['count'][label_index]}"
         count_str = count_str[:-1]
-        output_image_path_name = os.path.join(output_dir_path, f'{os.path.splitext(os.path.basename(json_dict["image_path"]))[0]}-pred(ans)-{count_str}')
+        if json_dict['answer'] is not None:
+            output_image_path_name = os.path.join(output_dir_path, f'{os.path.splitext(os.path.basename(json_dict["image_path"]))[0]}-pred(ans)-{count_str}')
+        else:
+            output_image_path_name = os.path.join(output_dir_path, f'{os.path.splitext(os.path.basename(json_dict["image_path"]))[0]}')
         cam_canvas_image = draw_canvas(Image.open(json_dict['image_path']).convert('RGBA'),
                                        np.asarray(json_dict['cam']['array']).reshape(json_dict['cam']['shape']),
                                        classes, colors)
@@ -85,11 +87,10 @@ def main(input_json_dir_path, input_classes_path, output_dir_path):
             black_image = np.zeros(np.asarray(Image.open(json_dict['image_path']).convert('RGBA')).shape, dtype=np.uint8)
             black_image[:, :, 3] = 255
             black_image = Image.fromarray(black_image)
-            grad_cam_canvas_image_list = draw_canvas_per_preds(black_image,
+            grad_cam_canvas_image = draw_canvas_per_preds(black_image,
                                            np.asarray(grad_cam['array']).reshape(grad_cam['shape']),
                                            classes, colors)
-            for grad_cam_canvas_image_index, grad_cam_canvas_image in enumerate(grad_cam_canvas_image_list):
-                grad_cam_canvas_image.save(output_image_path_name+f'_cam_grad_{grad_index:02d}_class_{grad_cam_canvas_image_index:02d}_label_{classes[grad_cam_canvas_image_index]}.png')
+            grad_cam_canvas_image.save(output_image_path_name+f'_cam_grad_{grad_index:02d}.png')
 
 
 
